@@ -1,5 +1,7 @@
 package com.anjotics.anjotics.persistance.entity;
 
+import java.util.UUID;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,9 +13,9 @@ import jakarta.persistence.Table;
 @Table(name = "users")
 public class User {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id_user")
-  private Integer idUser;
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "id_user", columnDefinition = "UUID")
+  private UUID idUser;
 
   @Column(name = "id_number")
   private Integer idNumber;
@@ -37,11 +39,11 @@ public class User {
   @Column(name = "id_parent")
   private Integer idParent;
 
-  public Integer getIdUser() {
+  public UUID getIdUser() {
     return idUser;
   }
 
-  public void setIdUser(Integer idUser) {
+  public void setIdUser(UUID idUser) {
     this.idUser = idUser;
   }
 
