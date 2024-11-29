@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "users")
@@ -17,25 +18,36 @@ public class User {
   @Column(name = "id_user", columnDefinition = "UUID")
   private UUID idUser;
 
-  @Column(name = "id_number")
+  @NotNull
+  @Column(name = "id_number", unique = true)
   private Integer idNumber;
 
+  @NotNull
   private String name;
 
+  @NotNull
   @Column(name = "image_profile_url")
   private String imageProfileUrl;
 
+  @NotNull
   private String area;
 
+  @NotNull
   @Column(name = "profile_url")
   private String profileUrl;
 
+  @NotNull
   private String office;
+
   private String[] tags;
 
+  @NotNull
   @Column(name = "position_name")
   private String positionName;
 
+  /*
+   * Exception is the positionName is CEO
+   */
   @Column(name = "id_parent")
   private Integer idParent;
 
@@ -116,6 +128,10 @@ public class User {
   }
 
   public void setIdParent(Integer idParent) {
-    this.idParent = idParent;
+    if ("CEO".equals(this.positionName)) {
+      this.idParent = null;
+    } else {
+      this.idParent = idParent;
+    }
   }
 }
