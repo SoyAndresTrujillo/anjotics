@@ -39,6 +39,9 @@ dependencies {
 
   // CSV parser
   implementation 'com.opencsv:opencsv:5.7.1'
+
+  // Jackson
+  implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 }
 
 tasks.named('test') {

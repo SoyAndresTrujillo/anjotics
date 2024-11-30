@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.anjotics.anjotics.domain.UserDomain;
 import com.anjotics.anjotics.domain.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.exceptions.CsvException;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,6 +25,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 @RestController
 @RequestMapping("/users")
 public class UserController {
+  /**
+   * This is the ObjectMapper instance that is used to convert UserDomain objects to JSON strings.
+   */
+  private final ObjectMapper objectMapper = new ObjectMapper();
+
   /**
    * This is the UserService instance that is used to perform CRUD operations
    * on the User entity.
@@ -62,8 +68,8 @@ public class UserController {
   })
   public ResponseEntity<String> importUsers(@RequestParam("file") MultipartFile file) {
     try {
-        List<String[]> records = userService.parseCsvFile(file.getInputStream());
-        return ResponseEntity.ok("Successfully imported " + records.size() + " users");
+        List<UserDomain> records = userService.parseCsvFile(file.getInputStream());
+        return ResponseEntity.ok("Successfully imported " + objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(records) + " users");
     } catch (IOException | CsvException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error importing users");
     }

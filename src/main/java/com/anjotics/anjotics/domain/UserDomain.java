@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public class UserDomain {
   private UUID idUser;
-  private Integer positionNumber;
+  private String positionNumber;
   private String name;
   private String profilePicture;
   private String area;
@@ -12,7 +12,7 @@ public class UserDomain {
   private String office;
   private String[] tags;
   private String position;
-  private Integer relationBoss;
+  private String relationBoss;
 
   public UUID getIdUser() {
     return idUser;
@@ -22,11 +22,11 @@ public class UserDomain {
     this.idUser = idUser;
   }
 
-  public Integer getPositionNumber() {
+  public String getPositionNumber() {
     return positionNumber;
   }
 
-  public void setPositionNumber(Integer positionNumber) {
+  public void setPositionNumber(String positionNumber) {
     this.positionNumber = positionNumber;
   }
 
@@ -86,11 +86,11 @@ public class UserDomain {
     this.position = position;
   }
 
-  public Integer getRelationBoss() {
+  public String getRelationBoss() {
     return relationBoss;
   }
 
-  public void setRelationBoss(Integer relationBoss) {
+  public void setRelationBoss(String relationBoss) {
     this.relationBoss = relationBoss;
   }
 }
