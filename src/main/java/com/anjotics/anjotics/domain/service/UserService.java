@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.anjotics.anjotics.domain.UserDomain;
 import com.anjotics.anjotics.domain.repository.UserRepository;
+import com.anjotics.anjotics.exceptions.EmptyCsvException;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
@@ -52,10 +52,9 @@ public class UserService {
               .build()) {
           records = csvReader.readAll();
       }
-
-      if (records.isEmpty()) {
-          return Collections.emptyList();
-      }
+      if (records.isEmpty()) throw new EmptyCsvException("The uploaded CSV file is empty 😞.");
+      if (records.get(0).length < 9) throw new EmptyCsvException("The uploaded CSV file not have sufficient headers 😞.");
+      if (records.size() == 1) throw new EmptyCsvException("The uploaded CSV file not have correct sufficient columns 😞.");
 
       List<UserDomain> users = new ArrayList<>();
       // Start from 1 to skip header
@@ -63,7 +62,7 @@ public class UserService {
           String[] record = records.get(i);
           if (record.length < 9) {
               // Handle insufficient columns
-              continue;
+              throw new EmptyCsvException("The uploaded CSV file not have correct columns 😞.");
           }
 
           UserDomain user = new UserDomain();

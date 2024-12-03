@@ -8,3 +8,8 @@ This script will deploy the API with the production profile, the ```-Dspring.pro
 ```
 java -jar -Dspring.profiles.active=pdn build/libs/anjotics-1.0.jar
 ```
+
+# Swagger UI
+```
+http://localhost:8080/api/swagger-ui/index.html
+```

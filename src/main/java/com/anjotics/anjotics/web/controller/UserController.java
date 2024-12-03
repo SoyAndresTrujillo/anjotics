@@ -1,7 +1,10 @@
 package com.anjotics.anjotics.web.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -53,25 +56,45 @@ public class UserController {
   }
 
   /**
-   * This controller is used for create new users (called bull process) from a
-   * csv file in body request with key file.
-   * The response is a message with success or failed records.
+   * Endpoint to import users from a CSV file.
    * 
-   * @param file
-   * @return ResponseEntity<String>
+   * This method accepts a CSV file as input, parses the file to extract user data,
+   * and saves the users to the database. The CSV file should have a specific format
+   * with ';' as the separator. The first row is expected to be the header, and the
+   * subsequent rows should contain user data.
+   * 
+   * @param file The CSV file containing user data. It should be uploaded as a
+   *             multipart file with the request.
+   * @return ResponseEntity containing a map with the import status, message, and
+   *         the list of imported users. If successful, the response will have a
+   *         status code of 200. In case of an error, the response will have a
+   *         status code of 500.
+   * 
+   * @throws IOException  If an I/O error occurs while reading the file.
+   * @throws CsvException If a CSV parsing error occurs.
    */
   @PostMapping("/import")
-  @Operation(summary = "Import users from a csv file", description = "Imports users from a csv file")
+  @Operation(summary = "Import users from a CSV file", description = "Imports users from a CSV file and saves them to the database.")
   @ApiResponses(value = {
-    @ApiResponse(responseCode = "200", description = "Successfully imported users"),
-    @ApiResponse(responseCode = "500", description = "Internal server error")
+      @ApiResponse(responseCode = "200", description = "Successfully imported users"),
+      @ApiResponse(responseCode = "500", description = "Internal server error")
   })
-  public ResponseEntity<String> importUsers(@RequestParam("file") MultipartFile file) {
-    try {
-        List<UserDomain> records = userService.parseCsvFile(file.getInputStream());
-        return ResponseEntity.ok("Successfully imported " + objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(records) + " users");
-    } catch (IOException | CsvException e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error importing users");
-    }
+  public ResponseEntity<Map<String, Object>> importUsers(@RequestParam("file") MultipartFile file) {
+      try {
+          List<UserDomain> records = userService.parseCsvFile(file.getInputStream());
+          
+          Map<String, Object> response = new LinkedHashMap<>();
+          response.put("Message", "Successfully imported " + records.size() + " users");
+          response.put("Status code", 200);
+          response.put("Data", records);
+          
+          return ResponseEntity.ok(response);
+      } catch (IOException | CsvException e) {
+          Map<String, Object> errorResponse = new HashMap<>();
+          errorResponse.put("message", "Error importing users");
+          errorResponse.put("status code", 500);
+          
+          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+      }
   }
 }
