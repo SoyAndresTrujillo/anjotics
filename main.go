@@ -2,14 +2,15 @@ package main
 
 import (
 	"context"
-	"github.com/gorilla/mux"
-	"github.com/joho/godotenv"
-	"github.com/soyandrestrujillo/advanced_go_rest_websockets/handlers"
-	"github.com/soyandrestrujillo/advanced_go_rest_websockets/middelware"
-	"github.com/soyandrestrujillo/advanced_go_rest_websockets/server"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
+	"github.com/soyandrestrujillo/advanced_go_rest_websockets/handlers"
+	"github.com/soyandrestrujillo/advanced_go_rest_websockets/middleware"
+	"github.com/soyandrestrujillo/advanced_go_rest_websockets/server"
 )
 
 func main() {
@@ -37,7 +38,7 @@ func main() {
 
 func BindRoutes(s server.Server, r *mux.Router) {
 	// Add middelware to check if user is authenticated
-	r.Use(middelware.CheckAuthMiddelware(s))
+	r.Use(middleware.CheckAuthMiddleware(s))
 
 	// Add routes to router
 	r.HandleFunc("/", handlers.HomeHandler(s)).Methods(http.MethodGet)
